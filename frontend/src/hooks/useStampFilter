@@ -1,0 +1,36 @@
+import { useState, useMemo } from 'react';
+import { sortStamps, SORT_OPTIONS } from './filterUtils';
+
+const useStampFilter = (stamps) => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedSet, setSelectedSet] = useState('');
+    const [sortOption, setSortOption] = useState('');
+
+    const filteredStamps = useMemo(() => {
+        let filtered = stamps.filter(stamp =>
+            stamp.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+            (selectedSet === '' || stamp.setId === parseInt(selectedSet))
+        );
+        return sortStamps(filtered, sortOption);
+    }, [stamps, searchQuery, selectedSet, sortOption]);
+
+    const handleSetChange = (setId) => {
+        setSelectedSet(setId);
+    };
+
+    const handleSortChange = (option) => {
+        setSortOption(option);
+    };
+
+    return {
+        searchQuery,
+        setSearchQuery,
+        selectedSet,
+        handleSetChange,
+        filteredStamps,
+        sortOption,
+        handleSortChange
+    };
+};
+
+export default useStampFilter;
